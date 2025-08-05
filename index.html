@@ -520,7 +520,7 @@
             contentInput.value = content;
             typeInput.value = type;
             
-            populatePermissionDropdown(permissionGroup);
+            populatePermissionDropdown(permissionGroup.includes('diretoria') ? allPermissionGroups : permissionGroup);
             updateParentDropdown(parentId);
             handleTypeChange();
 
@@ -738,4 +738,5 @@
     </script>
 </body>
 </html>
+
 
