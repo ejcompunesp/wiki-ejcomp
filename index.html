@@ -342,7 +342,7 @@
         let currentUserGroups = [];
 
         // --- LÓGICA DE PERMISSÕES ---
-        const allPermissionGroups = ['todos', 'vendas', 'operacoes', 'marketing', 'projetos', 'InovE', 'GP', 'Diretoria'];
+        const allPermissionGroups = ['todos', 'vendas', 'operacoes', 'marketing', 'projetos', 'inove', 'gp', 'diretoria'];
 
         async function fetchUserGroups(user) {
             if (!user) return [];
@@ -365,7 +365,7 @@
 
         function canViewItem(item, userGroups) {
             if (!item.permissionGroup || item.permissionGroup === 'todos') return true;
-            if (userGroups.includes('Diretoria')) return true;
+            if (userGroups.includes('diretoria')) return true;
             return userGroups.includes(item.permissionGroup);
         }
 
@@ -738,3 +738,4 @@
     </script>
 </body>
 </html>
+
