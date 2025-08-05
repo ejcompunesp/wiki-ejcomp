@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiki EJComp</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Showdown.js para converter Markdown em HTML -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+
+    <style>
+        :root {
+            --primary-purple: #b063ff;
+            --dark-purple: #201941;
+            --white: #ffffff;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, var(--primary-purple) 0%, #c48eff 100%);
+            min-height: 100vh;
+        }
+        
+        .header-custom {
+            background: rgba(32, 25, 65, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(176, 99, 255, 0.3);
+        }
+
+        .wiki-content h1 { 
+            font-size: 2.25rem; 
+            font-weight: 700; 
+            margin-top: 1.5rem; 
+            margin-bottom: 1rem; 
+            border-bottom: 2px solid var(--primary-purple); 
+            padding-bottom: 0.5rem; 
+            color: var(--dark-purple);
+        }
+        .wiki-content h2 { font-size: 1.875rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; color: var(--dark-purple); }
+        .wiki-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; color: var(--dark-purple); }
+        .wiki-content p { margin-bottom: 1rem; line-height: 1.6; color: #374151; }
+        .wiki-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; color: #374151; }
+        .wiki-content ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1rem; color: #374151; }
+        .wiki-content a { color: var(--primary-purple); text-decoration: underline; font-weight: 500; }
+        .wiki-content pre { 
+            background: linear-gradient(135deg, var(--dark-purple) 0%, #2d1b5c 100%); 
+            color: var(--white); 
+            padding: 1rem; 
+            border-radius: 0.75rem; 
+            margin-bottom: 1rem; 
+            overflow-x: auto; 
+            border: 1px solid var(--primary-purple);
+        }
+        .wiki-content code { 
+            font-family: monospace; 
+            background: linear-gradient(135deg, var(--primary-purple) 0%, #9c4eff 100%); 
+            color: var(--white); 
+            padding: 0.2rem 0.6rem; 
+            border-radius: 0.375rem; 
+            font-weight: 500;
+        }
+        .wiki-content pre code { background: transparent; padding: 0; }
+        .wiki-content blockquote { 
+            border-left: 4px solid var(--primary-purple); 
+            padding-left: 1rem; 
+            margin-left: 0; 
+            font-style: italic; 
+            color: #6b7280; 
+            background: rgba(176, 99, 255, 0.05);
+            border-radius: 0 0.5rem 0.5rem 0;
+            padding: 1rem;
+        }
+        .wiki-content img { max-width: 100%; height: auto; border-radius: 0.75rem; margin-top: 1rem; margin-bottom: 1rem; border: 2px solid var(--primary-purple); }
+        
+        .folder-toggle::before { 
+            content: '►'; 
+            display: inline-block; 
+            margin-right: 6px; 
+            transition: transform 0.2s; 
+            font-size: 0.7rem; 
+            color: var(--primary-purple);
+        }
+        .folder-toggle.open::before { transform: rotate(90deg); }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(176, 99, 255, 0.2);
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--dark-purple) 0%, #2d1b5c 100%);
+            color: var(--white);
+            border: 1px solid var(--primary-purple);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(32, 25, 65, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(32, 25, 65, 0.4);
+            background: linear-gradient(135deg, #2d1b5c 0%, var(--dark-purple) 100%);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div id="app" class="min-h-screen flex flex-col">
+        <header class="header-custom sticky top-0 z-20">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center">
+                    <img src="assets\Ejcomp-logo-branco.png" alt="Logo EJComp" class="h-10 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/ffffff/b063ff?text=EJComp';">
+                </div>
+                <div id="auth-container">
+                    <button id="login-btn" class="btn-primary font-semibold px-4 py-2 rounded-lg">
+                        Login com Google
+                    </button>
+                    <div id="user-info" class="hidden items-center space-x-4">
+                        <img id="user-avatar" class="w-10 h-10 rounded-full border-2 border-primary-purple" alt="Avatar do usuário">
+                        <span id="user-name" class="font-medium text-white hidden sm:block"></span>
+                        <!-- Botão de Gestão de Utilizadores (só para admin) -->
+                        <button id="manage-users-btn" class="hidden btn-primary p-2 rounded-full" title="Gerir Utilizadores">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0115 11.07M11.5 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                                <path d="M5.525 11.918A2.001 2.001 0 004 13.845V15a1 1 0 001 1h4a1 1 0 001-1v-1.155a2.001 2.001 0 00-1.525-1.927l-1.962-.702a1 1 0 01-.566 1.947l.566.202a.001.001 0 00.03 0l.001-.001a3.002 3.002 0 011.928 2.53H5a3 3 0 01-3-3v-1.155a4.002 4.002 0 012.06-3.568l.566-.202a1 1 0 01.566 1.947l-1.962.702z" />
+                            </svg>
+                        </button>
+                        <button id="logout-btn" class="bg-red-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                            Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row gap-8">
+                <aside class="w-full md:w-1/4 lg:w-1/5">
+                    <div class="glass-effect p-4 sticky top-24">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-dark-purple">Navegação</h2>
+                            <div id="global-actions" class="hidden space-x-2">
+                                <button id="new-folder-btn" title="Nova Pasta" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                                </button>
+                                <button id="new-page-btn" title="Nova Página" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="items-list" class="space-y-1">
+                            <p id="items-list-status" class="text-gray-500 italic">Faça login para ver o conteúdo.</p>
+                        </div>
+                    </div>
+                </aside>
+
+                <section id="wiki-content-area" class="w-full md:w-3/4 lg:w-4/5 glass-effect p-6 sm:p-8">
+                    <div id="welcome-message">
+                        <h2 class="text-3xl font-bold mb-4 text-dark-purple">Bem-vindo à Wiki!</h2>
+                        <p class="text-lg text-gray-600">Selecione um item na lista à esquerda para começar.</p>
+                        <p id="login-prompt" class="mt-4 text-lg text-gray-600">Para ver o conteúdo, por favor, <a href="#" id="login-link" class="font-semibold">faça o login</a>.</p>
+                    </div>
+                    
+                    <div id="page-display" class="hidden">
+                        <div class="flex justify-between items-start mb-4">
+                            <h2 id="page-title-display" class="text-4xl font-bold break-words"></h2>
+                            <div id="page-actions" class="hidden flex-shrink-0 ml-4 space-x-2">
+                                <button id="edit-item-btn" class="btn-primary p-2 rounded-lg" title="Editar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                                </button>
+                                <button id="delete-item-btn" class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-700 transition-colors" title="Excluir">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="page-content-display" class="wiki-content prose prose-lg max-w-none"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Edição de Item -->
+    <div id="editor-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-30 p-4">
+        <div class="glass-effect w-full max-w-4xl max-h-full flex flex-col">
+            <div class="p-5 border-b border-purple-200 flex justify-between items-center">
+                <h3 id="modal-title" class="text-2xl font-bold text-dark-purple">Novo Item</h3>
+                <button id="close-modal-btn" class="text-gray-500 hover:text-dark-purple text-3xl leading-none">&times;</button>
+            </div>
+            <div class="p-5 flex-grow overflow-y-auto">
+                <form id="item-form">
+                    <input type="hidden" id="item-id-input">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="type-input" class="block text-lg font-medium mb-2 text-dark-purple">Tipo</label>
+                            <select id="type-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple">
+                                <option value="page">Página</option>
+                                <option value="folder">Pasta</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="parent-input" class="block text-lg font-medium mb-2 text-dark-purple">Pasta Pai</label>
+                            <select id="parent-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple">
+                                <!-- Options will be populated by JS -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="title-input" class="block text-lg font-medium mb-2 text-dark-purple">Título</label>
+                            <input type="text" id="title-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple" required>
+                        </div>
+                        <div>
+                            <label for="permission-input" class="block text-lg font-medium mb-2 text-dark-purple">Permissão</label>
+                            <select id="permission-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple">
+                                <!-- As opções de permissão serão populadas pelo JS -->
+                            </select>
+                        </div>
+                    </div>
+                    <div id="content-wrapper">
+                        <label for="content-input" class="block text-lg font-medium mb-2 text-dark-purple">Conteúdo (Markdown)</label>
+                        <textarea id="content-input" rows="12" class="w-full p-3 border border-gray-300 rounded-lg font-mono text-sm focus:ring-2 focus:ring-primary-purple"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="p-5 border-t border-purple-200 bg-white bg-opacity-50 flex justify-end">
+                <button id="save-item-btn" class="btn-primary font-bold px-6 py-3 rounded-lg">
+                    Salvar Item
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Gestão de Utilizadores -->
+    <div id="manage-users-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-40 p-4">
+        <div class="glass-effect w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div class="p-5 border-b border-purple-200 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-dark-purple">Gerir Utilizadores</h3>
+                <button id="close-users-modal-btn" class="text-gray-500 hover:text-dark-purple text-3xl leading-none">&times;</button>
+            </div>
+            <div id="users-list-container" class="p-5 flex-grow overflow-y-auto space-y-3">
+                <!-- A lista de utilizadores será inserida aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="delete-confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-40 p-4">
+        <div class="glass-effect w-full max-w-md p-6">
+            <h3 class="text-xl font-bold mb-4 text-dark-purple">Confirmar Exclusão</h3>
+            <p id="delete-confirm-message" class="text-gray-700">Você tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.</p>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancel-delete-btn" class="bg-gray-200 text-gray-800 font-bold px-4 py-2 rounded-lg hover:bg-gray-300">Cancelar</button>
+                <button id="confirm-delete-btn" class="bg-red-600 text-white font-bold px-4 py-2 rounded-lg hover:bg-red-700">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, getDoc, addDoc, setDoc, deleteDoc, serverTimestamp, query, orderBy, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOPlv75-EMlwmaIdMk3j6XUnZcGdW5eoc",
+            authDomain: "wiki-ebde5.firebaseapp.com",
+            projectId: "wiki-ebde5",
+            storageBucket: "wiki-ebde5.appspot.com",
+            messagingSenderId: "680201739088",
+            appId: "1:680201739088:web:bd32b360468b881765aa55",
+            measurementId: "G-9NR73R7PXB"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+        
+        const markdownConverter = new showdown.Converter();
+
+        // Elementos da UI
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loginLink = document.getElementById('login-link');
+        const userInfo = document.getElementById('user-info');
+        const userAvatar = document.getElementById('user-avatar');
+        const userName = document.getElementById('user-name');
+        const loginPrompt = document.getElementById('login-prompt');
+        const globalActions = document.getElementById('global-actions');
+        const itemsListEl = document.getElementById('items-list');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const pageDisplay = document.getElementById('page-display');
+        const pageTitleDisplay = document.getElementById('page-title-display');
+        const pageContentDisplay = document.getElementById('page-content-display');
+        const newPageBtn = document.getElementById('new-page-btn');
+        const newFolderBtn = document.getElementById('new-folder-btn');
+        const editItemBtn = document.getElementById('edit-item-btn');
+        const deleteItemBtn = document.getElementById('delete-item-btn');
+        const pageActions = document.getElementById('page-actions');
+
+        // Modal de Edição
+        const editorModal = document.getElementById('editor-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const itemForm = document.getElementById('item-form');
+        const itemIdInput = document.getElementById('item-id-input');
+        const titleInput = document.getElementById('title-input');
+        const typeInput = document.getElementById('type-input');
+        const parentInput = document.getElementById('parent-input');
+        const permissionInput = document.getElementById('permission-input');
+        const contentWrapper = document.getElementById('content-wrapper');
+        const contentInput = document.getElementById('content-input');
+        const saveItemBtn = document.getElementById('save-item-btn');
+        
+        // Modal de Exclusão
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const deleteConfirmMessage = document.getElementById('delete-confirm-message');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        
+        // Modal de Gestão de Utilizadores
+        const manageUsersBtn = document.getElementById('manage-users-btn');
+        const manageUsersModal = document.getElementById('manage-users-modal');
+        const closeUsersModalBtn = document.getElementById('close-users-modal-btn');
+        const usersListContainer = document.getElementById('users-list-container');
+
+        // Estado da Aplicação
+        let currentUser = null;
+        let currentItemId = null;
+        let allItems = [];
+        let unsubscribeItemsListener = null;
+        let currentUserGroups = [];
+
+        // --- LÓGICA DE PERMISSÕES ---
+        const allPermissionGroups = ['todos', 'vendas', 'operacoes', 'marketing', 'projetos', 'InovE', 'GP', 'Diretoria'];
+
+        async function fetchUserGroups(user) {
+            if (!user) return [];
+            const userRolesRef = doc(db, 'user_roles', user.uid);
+            const docSnap = await getDoc(userRolesRef);
+
+            if (docSnap.exists()) {
+                return docSnap.data().groups || [];
+            } else {
+                // Utilizador novo, cria um registo de permissão para ele
+                console.log(`Creating role entry for new user: ${user.email}`);
+                await setDoc(userRolesRef, {
+                    email: user.email,
+                    name: user.displayName,
+                    groups: ['todos'] // Permissão padrão
+                });
+                return ['todos'];
+            }
+        }
+
+        function canViewItem(item, userGroups) {
+            if (!item.permissionGroup || item.permissionGroup === 'todos') return true;
+            if (userGroups.includes('Diretoria')) return true;
+            return userGroups.includes(item.permissionGroup);
+        }
+
+        // --- LÓGICA DE AUTENTICAÇÃO E CARREGAMENTO DE DADOS ---
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+                currentUserGroups = await fetchUserGroups(user);
+
+                userInfo.classList.remove('hidden');
+                userInfo.classList.add('flex');
+                loginBtn.classList.add('hidden');
+                loginPrompt.parentElement.classList.add('hidden');
+                globalActions.classList.remove('hidden');
+                globalActions.classList.add('flex');
+                
+                userAvatar.src = user.photoURL;
+                userName.textContent = user.displayName;
+
+                // Mostra o botão de gerir utilizadores se for da Diretoria
+                if (currentUserGroups.includes('Diretoria')) {
+                    manageUsersBtn.classList.remove('hidden');
+                } else {
+                    manageUsersBtn.classList.add('hidden');
+                }
+
+                if (currentItemId) pageActions.classList.remove('hidden');
+                listenForItems();
+            } else {
+                currentUserGroups = [];
+                userInfo.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+                loginPrompt.parentElement.classList.remove('hidden');
+                globalActions.classList.add('hidden');
+                pageActions.classList.add('hidden');
+                manageUsersBtn.classList.add('hidden');
+                
+                currentItemId = null;
+                pageDisplay.classList.add('hidden');
+                welcomeMessage.classList.remove('hidden');
+
+                if (unsubscribeItemsListener) unsubscribeItemsListener();
+                itemsListEl.innerHTML = '<p id="items-list-status" class="italic text-gray-500">Faça login para ver o conteúdo.</p>';
+            }
+        });
+
+        const signInWithGoogle = () => signInWithPopup(auth, provider).catch(err => console.error("Login error:", err));
+        const signOutUser = () => signOut(auth).catch(err => console.error("Logout error:", err));
+        
+        loginBtn.addEventListener('click', signInWithGoogle);
+        loginLink.addEventListener('click', (e) => { e.preventDefault(); signInWithGoogle(); });
+        logoutBtn.addEventListener('click', signOutUser);
+
+        function listenForItems() {
+            const itemsCollection = collection(db, 'items');
+            const q = query(itemsCollection, orderBy("title"));
+            
+            unsubscribeItemsListener = onSnapshot(q, (snapshot) => {
+                allItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderTree();
+            }, (error) => {
+                console.error("Firestore listener error:", error);
+                itemsListEl.innerHTML = '<p class="text-red-500 italic">Erro ao carregar. Verifique as permissões do Firestore.</p>';
+            });
+        }
+
+        function renderTree() {
+            itemsListEl.innerHTML = '';
+            const visibleItems = allItems.filter(item => canViewItem(item, currentUserGroups));
+            const tree = buildTree(visibleItems);
+
+            if (tree.length === 0) {
+                 itemsListEl.innerHTML = '<p class="italic text-gray-500">Nenhum item visível para você.</p>';
+                 return;
+            }
+            tree.forEach(node => renderNode(node, itemsListEl, 0));
+        }
+
+        function buildTree(items, parentId = null) {
+            return items
+                .filter(item => item.parentId === parentId)
+                .map(item => ({ ...item, children: buildTree(items, item.id) }));
+        }
+
+        function renderNode(node, parentEl, depth) {
+            const li = document.createElement('div');
+            li.style.marginLeft = `${depth * 16}px`;
+
+            if (node.type === 'folder') {
+                li.innerHTML = `
+                    <div class="flex items-center cursor-pointer group p-1 rounded-md hover:bg-purple-100">
+                        <span class="folder-toggle w-4 transition-transform duration-200"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-purple" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                        <span class="font-medium text-dark-purple">${node.title}</span>
+                    </div>
+                `;
+                const childrenContainer = document.createElement('div');
+                childrenContainer.className = 'hidden';
+                li.appendChild(childrenContainer);
+
+                li.querySelector('.group').addEventListener('click', () => {
+                    childrenContainer.classList.toggle('hidden');
+                    li.querySelector('.folder-toggle').classList.toggle('open');
+                });
+
+                node.children.forEach(child => renderNode(child, childrenContainer, depth + 1));
+            } else {
+                li.innerHTML = `
+                    <a href="#" data-id="${node.id}" class="flex items-center p-1 rounded-md hover:bg-purple-100 group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>
+                        <span class="group-hover:text-primary-purple">${node.title}</span>
+                    </a>
+                `;
+                li.querySelector('a').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    loadPageContent(node.id);
+                });
+            }
+            parentEl.appendChild(li);
+        }
+
+        async function loadPageContent(id) {
+            try {
+                const docRef = doc(db, 'items', id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const item = docSnap.data();
+                    if (!canViewItem(item, currentUserGroups)) {
+                        alert("Você não tem permissão para ver este item.");
+                        return;
+                    }
+
+                    if (item.type === 'folder') return;
+
+                    currentItemId = id;
+                    pageTitleDisplay.textContent = item.title;
+                    pageContentDisplay.innerHTML = markdownConverter.makeHtml(item.content || '');
+                    welcomeMessage.classList.add('hidden');
+                    pageDisplay.classList.remove('hidden');
+                    if (currentUser) pageActions.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error("Error loading page:", error);
+            }
+        }
+
+        function openEditorModal({ type = 'page', id = '', title = '', content = '', parentId = null, permissionGroup = 'todos' }) {
+            itemForm.reset();
+            itemIdInput.value = id;
+            titleInput.value = title;
+            contentInput.value = content;
+            typeInput.value = type;
+            
+            populatePermissionDropdown(permissionGroup);
+            updateParentDropdown(parentId);
+            handleTypeChange();
+
+            modalTitle.textContent = id ? 'Editar Item' : 'Novo Item';
+            editorModal.classList.remove('hidden');
+            titleInput.focus();
+        }
+
+        function populatePermissionDropdown(selectedGroup) {
+            permissionInput.innerHTML = '';
+            const isDirector = currentUserGroups.includes('Diretoria');
+            
+            const assignableGroups = allPermissionGroups.filter(group => {
+                if (group === 'todos' || isDirector) {
+                    return true;
+                }
+                return currentUserGroups.includes(group);
+            });
+
+            assignableGroups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group;
+                option.textContent = group;
+                if (group === selectedGroup) {
+                    option.selected = true;
+                }
+                permissionInput.appendChild(option);
+            });
+        }
+
+        function updateParentDropdown(selectedParentId) {
+            parentInput.innerHTML = '<option value="">Raiz (Nenhuma)</option>';
+            const folders = allItems.filter(item => item.type === 'folder' && canViewItem(item, currentUserGroups));
+            folders.forEach(folder => {
+                const option = document.createElement('option');
+                option.value = folder.id;
+                option.textContent = folder.title;
+                if (folder.id === selectedParentId) {
+                    option.selected = true;
+                }
+                parentInput.appendChild(option);
+            });
+        }
+
+        function handleTypeChange() {
+            contentWrapper.style.display = typeInput.value === 'page' ? 'block' : 'none';
+        }
+        typeInput.addEventListener('change', handleTypeChange);
+
+        newPageBtn.addEventListener('click', () => openEditorModal({ type: 'page' }));
+        newFolderBtn.addEventListener('click', () => openEditorModal({ type: 'folder' }));
+        closeModalBtn.addEventListener('click', () => editorModal.classList.add('hidden'));
+
+        editItemBtn.addEventListener('click', async () => {
+            if (!currentItemId) return;
+            const item = allItems.find(i => i.id === currentItemId);
+            if (item) {
+                if (currentUserGroups.includes('Diretoria') || item.authorUid === currentUser.uid) {
+                    openEditorModal(item);
+                } else {
+                    alert('Você não tem permissão para editar este item.');
+                }
+            }
+        });
+
+        saveItemBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (!currentUser || !titleInput.value.trim()) return;
+            if (typeInput.value === 'page' && !contentInput.value.trim()) {
+                alert("Páginas devem ter conteúdo.");
+                return;
+            }
+
+            const itemData = {
+                title: titleInput.value.trim(),
+                type: typeInput.value,
+                parentId: parentInput.value || null,
+                permissionGroup: permissionInput.value,
+                authorUid: currentUser.uid,
+                authorName: currentUser.displayName,
+                updatedAt: serverTimestamp()
+            };
+            if (itemData.type === 'page') {
+                itemData.content = contentInput.value;
+            }
+
+            const id = itemIdInput.value;
+            try {
+                let docIdToLoad = id;
+                const itemsCollection = collection(db, 'items');
+                if (id) {
+                    await setDoc(doc(itemsCollection, id), itemData, { merge: true });
+                } else {
+                    itemData.createdAt = serverTimestamp();
+                    const docRef = await addDoc(itemsCollection, itemData);
+                    docIdToLoad = docRef.id;
+                }
+                editorModal.classList.add('hidden');
+                if (itemData.type === 'page') loadPageContent(docIdToLoad);
+            } catch (error) {
+                console.error("Error saving item:", error);
+                alert("Erro ao salvar. Verifique o console para mais detalhes.");
+            }
+        });
+
+        let itemToDelete = null;
+        deleteItemBtn.addEventListener('click', () => {
+            if (!currentItemId) return;
+            itemToDelete = allItems.find(i => i.id === currentItemId);
+            if(itemToDelete) {
+                 if (currentUserGroups.includes('Diretoria') || itemToDelete.authorUid === currentUser.uid) {
+                    deleteConfirmModal.classList.remove('hidden');
+                 } else {
+                    alert('Você não tem permissão para excluir este item.');
+                 }
+            }
+        });
+
+        cancelDeleteBtn.addEventListener('click', () => deleteConfirmModal.classList.add('hidden'));
+
+        confirmDeleteBtn.addEventListener('click', async () => {
+            if (!itemToDelete || !currentUser) return;
+            try {
+                const batch = writeBatch(db);
+                const childrenIds = getChildrenRecursive(itemToDelete.id, allItems);
+                [...childrenIds, itemToDelete.id].forEach(id => {
+                    batch.delete(doc(db, "items", id));
+                });
+                await batch.commit();
+
+                deleteConfirmModal.classList.add('hidden');
+                pageDisplay.classList.add('hidden');
+                welcomeMessage.classList.remove('hidden');
+                currentItemId = null;
+                pageActions.classList.add('hidden');
+            } catch (error) {
+                console.error("Error deleting item:", error);
+                alert("Erro ao excluir. Verifique o console para mais detalhes.");
+            }
+        });
+
+        function getChildrenRecursive(parentId, items) {
+            const children = items.filter(item => item.parentId === parentId);
+            let allChildrenIds = children.map(c => c.id);
+            children.forEach(c => {
+                if (c.type === 'folder') {
+                    allChildrenIds = [...allChildrenIds, ...getChildrenRecursive(c.id, items)];
+                }
+            });
+            return allChildrenIds;
+        }
+
+        // --- LÓGICA DE GESTÃO DE UTILIZADORES ---
+        async function loadAllUsers() {
+            usersListContainer.innerHTML = '<p>A carregar utilizadores...</p>';
+            const usersRef = collection(db, 'user_roles');
+            const querySnapshot = await getDocs(usersRef);
+            
+            usersListContainer.innerHTML = ''; // Limpa o container
+            querySnapshot.forEach(docSnap => {
+                const userData = docSnap.data();
+                const userDiv = document.createElement('div');
+                userDiv.className = 'flex items-center justify-between p-2 rounded-lg hover:bg-purple-100';
+                
+                const userInfoHtml = `
+                    <div>
+                        <p class="font-bold text-dark-purple">${userData.name || 'Nome não disponível'}</p>
+                        <p class="text-sm text-gray-600">${userData.email}</p>
+                    </div>
+                `;
+
+                const roleSelector = document.createElement('select');
+                roleSelector.className = 'p-2 border border-gray-300 rounded-lg';
+                roleSelector.dataset.userId = docSnap.id; // Guarda o ID do utilizador no select
+
+                allPermissionGroups.forEach(group => {
+                    const option = document.createElement('option');
+                    option.value = group;
+                    option.textContent = group;
+                    if (userData.groups && userData.groups.includes(group)) {
+                        option.selected = true;
+                    }
+                    roleSelector.appendChild(option);
+                });
+
+                roleSelector.addEventListener('change', async (e) => {
+                    const selectedRole = e.target.value;
+                    const userId = e.target.dataset.userId;
+                    console.log(`A alterar permissão de ${userId} para ${selectedRole}`);
+                    try {
+                        const userRoleRef = doc(db, 'user_roles', userId);
+                        await setDoc(userRoleRef, { groups: [selectedRole] }, { merge: true });
+                        alert(`Permissão de ${userData.name} alterada para ${selectedRole}!`);
+                    } catch (error) {
+                        console.error("Erro ao alterar permissão:", error);
+                        alert("Ocorreu um erro ao alterar a permissão.");
+                    }
+                });
+
+                userDiv.innerHTML = userInfoHtml;
+                userDiv.appendChild(roleSelector);
+                usersListContainer.appendChild(userDiv);
+            });
+        }
+
+        manageUsersBtn.addEventListener('click', () => {
+            manageUsersModal.classList.remove('hidden');
+            loadAllUsers();
+        });
+
+        closeUsersModalBtn.addEventListener('click', () => {
+            manageUsersModal.classList.add('hidden');
+        });
+
+    </script>
+</body>
+</html>
