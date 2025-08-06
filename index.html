@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wiki EJComp</title>
-    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Showdown.js para converter Markdown em HTML -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
 
     <style>
@@ -110,7 +107,6 @@
             box-shadow: 0 8px 25px rgba(32, 25, 65, 0.4);
             background: linear-gradient(135deg, #2d1b5c 0%, var(--dark-purple) 100%);
         }
-        
     </style>
 </head>
 <body>
@@ -128,7 +124,6 @@
                     <div id="user-info" class="hidden items-center space-x-4">
                         <img id="user-avatar" class="w-10 h-10 rounded-full border-2 border-primary-purple" alt="Avatar do usuário">
                         <span id="user-name" class="font-medium text-white hidden sm:block"></span>
-                        <!-- Botão de Gestão de Utilizadores (só para admin) -->
                         <button id="manage-users-btn" class="hidden btn-primary p-2 rounded-full" title="Gerir Utilizadores">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0115 11.07M11.5 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
@@ -190,7 +185,6 @@
         </main>
     </div>
 
-    <!-- Modal de Edição de Item -->
     <div id="editor-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-30 p-4">
         <div class="glass-effect w-full max-w-4xl max-h-full flex flex-col">
             <div class="p-5 border-b border-purple-200 flex justify-between items-center">
@@ -211,8 +205,7 @@
                         <div>
                             <label for="parent-input" class="block text-lg font-medium mb-2 text-dark-purple">Pasta Pai</label>
                             <select id="parent-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple">
-                                <!-- Options will be populated by JS -->
-                            </select>
+                                </select>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -223,8 +216,7 @@
                         <div>
                             <label for="permission-input" class="block text-lg font-medium mb-2 text-dark-purple">Permissão</label>
                             <select id="permission-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple">
-                                <!-- As opções de permissão serão populadas pelo JS -->
-                            </select>
+                                </select>
                         </div>
                     </div>
                     <div id="content-wrapper">
@@ -241,7 +233,6 @@
         </div>
     </div>
     
-    <!-- Modal de Gestão de Utilizadores -->
     <div id="manage-users-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-40 p-4">
         <div class="glass-effect w-full max-w-2xl max-h-[80vh] flex flex-col">
             <div class="p-5 border-b border-purple-200 flex justify-between items-center">
@@ -249,12 +240,10 @@
                 <button id="close-users-modal-btn" class="text-gray-500 hover:text-dark-purple text-3xl leading-none">&times;</button>
             </div>
             <div id="users-list-container" class="p-5 flex-grow overflow-y-auto space-y-3">
-                <!-- A lista de utilizadores será inserida aqui -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
     <div id="delete-confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-40 p-4">
         <div class="glass-effect w-full max-w-md p-6">
             <h3 class="text-xl font-bold mb-4 text-dark-purple">Confirmar Exclusão</h3>
@@ -386,7 +375,7 @@
                 userName.textContent = user.displayName;
 
                 // Mostra o botão de gerir utilizadores se for da Diretoria
-                if (currentUserGroups.includes('Diretoria')) {
+                if (currentUserGroups.includes('diretoria')) {
                     manageUsersBtn.classList.remove('hidden');
                 } else {
                     manageUsersBtn.classList.add('hidden');
@@ -471,7 +460,7 @@
                     li.querySelector('.folder-toggle').classList.toggle('open');
                 });
 
-                node.children.forEach(child => renderNode(child, childrenContainer, depth + 1));
+                node.children.forEach(child => renderNode(child, childrenContainer, 0)); // Corrigido para profundidade 0 dentro da pasta
             } else {
                 li.innerHTML = `
                     <a href="#" data-id="${node.id}" class="flex items-center p-1 rounded-md hover:bg-purple-100 group">
@@ -520,7 +509,7 @@
             contentInput.value = content;
             typeInput.value = type;
             
-            populatePermissionDropdown(permissionGroup.includes('diretoria') ? allPermissionGroups : permissionGroup);
+            populatePermissionDropdown(permissionGroup);
             updateParentDropdown(parentId);
             handleTypeChange();
 
@@ -531,7 +520,7 @@
 
         function populatePermissionDropdown(selectedGroup) {
             permissionInput.innerHTML = '';
-            const isDirector = currentUserGroups.includes('Diretoria');
+            const isDirector = currentUserGroups.includes('diretoria');
             
             const assignableGroups = allPermissionGroups.filter(group => {
                 if (group === 'todos' || isDirector) {
@@ -578,7 +567,7 @@
             if (!currentItemId) return;
             const item = allItems.find(i => i.id === currentItemId);
             if (item) {
-                if (currentUserGroups.includes('Diretoria') || item.authorUid === currentUser.uid) {
+                if (currentUserGroups.includes('diretoria') || item.authorUid === currentUser.uid) {
                     openEditorModal(item);
                 } else {
                     alert('Você não tem permissão para editar este item.');
@@ -631,7 +620,7 @@
             if (!currentItemId) return;
             itemToDelete = allItems.find(i => i.id === currentItemId);
             if(itemToDelete) {
-                 if (currentUserGroups.includes('Diretoria') || itemToDelete.authorUid === currentUser.uid) {
+                 if (currentUserGroups.includes('diretoria') || itemToDelete.authorUid === currentUser.uid) {
                     deleteConfirmModal.classList.remove('hidden');
                  } else {
                     alert('Você não tem permissão para excluir este item.');
@@ -674,56 +663,76 @@
         }
 
         // --- LÓGICA DE GESTÃO DE UTILIZADORES ---
-        async function loadAllUsers() {
-            usersListContainer.innerHTML = '<p>A carregar utilizadores...</p>';
-            const usersRef = collection(db, 'user_roles');
-            const querySnapshot = await getDocs(usersRef);
-            
-            usersListContainer.innerHTML = ''; // Limpa o container
-            querySnapshot.forEach(docSnap => {
-                const userData = docSnap.data();
-                const userDiv = document.createElement('div');
-                userDiv.className = 'flex items-center justify-between p-2 rounded-lg hover:bg-purple-100';
+         async function loadAllUsers() {
+            usersListContainer.innerHTML = '<p class="italic text-gray-500">A carregar utilizadores...</p>';
+            try {
+                const usersRef = collection(db, 'user_roles');
+                const querySnapshot = await getDocs(usersRef);
                 
-                const userInfoHtml = `
-                    <div>
-                        <p class="font-bold text-dark-purple">${userData.name || 'Nome não disponível'}</p>
-                        <p class="text-sm text-gray-600">${userData.email}</p>
-                    </div>
-                `;
+                usersListContainer.innerHTML = ''; // Limpa o container
 
-                const roleSelector = document.createElement('select');
-                roleSelector.className = 'p-2 border border-gray-300 rounded-lg';
-                roleSelector.dataset.userId = docSnap.id; // Guarda o ID do utilizador no select
+                querySnapshot.forEach(docSnap => {
+                    const userData = docSnap.data();
+                    const userId = docSnap.id;
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-purple-100 transition-colors';
+                    
+                    userDiv.innerHTML = `
+                        <div>
+                            <p class="font-bold text-dark-purple">${userData.name || 'Nome não disponível'}</p>
+                            <p class="text-sm text-gray-600">${userData.email}</p>
+                        </div>
+                    `;
 
-                allPermissionGroups.forEach(group => {
-                    const option = document.createElement('option');
-                    option.value = group;
-                    option.textContent = group;
-                    if (userData.groups && userData.groups.includes(group)) {
-                        option.selected = true;
-                    }
-                    roleSelector.appendChild(option);
+                    const roleSelector = document.createElement('select');
+                    roleSelector.className = 'p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple';
+                    
+                    // LÓGICA DE EXIBIÇÃO CORRIGIDA
+                    const userCurrentGroups = userData.groups || [];
+                    const primaryRole = userCurrentGroups.find(g => g !== 'todos') || 'todos';
+
+                    allPermissionGroups.forEach(group => {
+                        const option = document.createElement('option');
+                        option.value = group;
+                        option.textContent = group;
+                        if (group === primaryRole) {
+                            option.selected = true;
+                        }
+                        roleSelector.appendChild(option);
+                    });
+
+                    roleSelector.addEventListener('change', async (e) => {
+                        const selectedRole = e.target.value;
+                        console.log(`Alterando permissão de ${userId} para ${selectedRole}`);
+                        
+                        // LÓGICA DE SALVAMENTO CORRIGIDA
+                        let newGroups = [];
+                        if (selectedRole === 'todos') {
+                            newGroups = ['todos'];
+                        } else {
+                            newGroups = [selectedRole, 'todos'];
+                        }
+                        // Garante que não há duplicatas
+                        newGroups = [...new Set(newGroups)];
+
+                        try {
+                            const userRoleRef = doc(db, 'user_roles', userId);
+                            await setDoc(userRoleRef, { groups: newGroups }, { merge: true });
+                            alert(`Permissão de ${userData.name} alterada para ${selectedRole}!`);
+                        } catch (error) {
+                            console.error("Erro ao alterar permissão:", error);
+                            alert("Ocorreu um erro ao alterar a permissão.");
+                        }
+                    });
+
+                    userDiv.appendChild(roleSelector);
+                    usersListContainer.appendChild(userDiv);
                 });
 
-                roleSelector.addEventListener('change', async (e) => {
-                    const selectedRole = e.target.value;
-                    const userId = e.target.dataset.userId;
-                    console.log(`A alterar permissão de ${userId} para ${selectedRole}`);
-                    try {
-                        const userRoleRef = doc(db, 'user_roles', userId);
-                        await setDoc(userRoleRef, { groups: [selectedRole] }, { merge: true });
-                        alert(`Permissão de ${userData.name} alterada para ${selectedRole}!`);
-                    } catch (error) {
-                        console.error("Erro ao alterar permissão:", error);
-                        alert("Ocorreu um erro ao alterar a permissão.");
-                    }
-                });
-
-                userDiv.innerHTML = userInfoHtml;
-                userDiv.appendChild(roleSelector);
-                usersListContainer.appendChild(userDiv);
-            });
+            } catch (error) {
+                console.error("Erro ao carregar utilizadores:", error);
+                usersListContainer.innerHTML = '<p class="text-red-500 italic">Erro ao carregar utilizadores. Verifique o console.</p>';
+            }
         }
 
         manageUsersBtn.addEventListener('click', () => {
@@ -738,5 +747,3 @@
     </script>
 </body>
 </html>
-
-
