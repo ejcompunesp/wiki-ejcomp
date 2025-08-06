@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wiki EJComp</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
 
     <style>
@@ -18,98 +16,42 @@
             --dark-purple: #201941;
             --white: #ffffff;
         }
-        
         body { 
             font-family: 'Inter', sans-serif; 
             background: linear-gradient(135deg, var(--primary-purple) 0%, #c48eff 100%);
             min-height: 100vh;
         }
-        
         .header-custom {
             background: rgba(32, 25, 65, 0.8);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(176, 99, 255, 0.3);
         }
-
-        .wiki-content h1 { 
-            font-size: 2.25rem; 
-            font-weight: 700; 
-            margin-top: 1.5rem; 
-            margin-bottom: 1rem; 
-            border-bottom: 2px solid var(--primary-purple); 
-            padding-bottom: 0.5rem; 
-            color: var(--dark-purple);
-        }
+        .wiki-content h1 { font-size: 2.25rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid var(--primary-purple); padding-bottom: 0.5rem; color: var(--dark-purple); }
         .wiki-content h2 { font-size: 1.875rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; color: var(--dark-purple); }
         .wiki-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; color: var(--dark-purple); }
         .wiki-content p { margin-bottom: 1rem; line-height: 1.6; color: #374151; }
         .wiki-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; color: #374151; }
         .wiki-content ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1rem; color: #374151; }
         .wiki-content a { color: var(--primary-purple); text-decoration: underline; font-weight: 500; }
-        .wiki-content pre { 
-            background: linear-gradient(135deg, var(--dark-purple) 0%, #2d1b5c 100%); 
-            color: var(--white); 
-            padding: 1rem; 
-            border-radius: 0.75rem; 
-            margin-bottom: 1rem; 
-            overflow-x: auto; 
-            border: 1px solid var(--primary-purple);
-        }
-        .wiki-content code { 
-            font-family: monospace; 
-            background: linear-gradient(135deg, var(--primary-purple) 0%, #9c4eff 100%); 
-            color: var(--white); 
-            padding: 0.2rem 0.6rem; 
-            border-radius: 0.375rem; 
-            font-weight: 500;
-        }
+        .wiki-content pre { background: linear-gradient(135deg, var(--dark-purple) 0%, #2d1b5c 100%); color: var(--white); padding: 1rem; border-radius: 0.75rem; margin-bottom: 1rem; overflow-x: auto; border: 1px solid var(--primary-purple); }
+        .wiki-content code { font-family: monospace; background: linear-gradient(135deg, var(--primary-purple) 0%, #9c4eff 100%); color: var(--white); padding: 0.2rem 0.6rem; border-radius: 0.375rem; font-weight: 500; }
         .wiki-content pre code { background: transparent; padding: 0; }
-        .wiki-content blockquote { 
-            border-left: 4px solid var(--primary-purple); 
-            padding-left: 1rem; 
-            margin-left: 0; 
-            font-style: italic; 
-            color: #6b7280; 
-            background: rgba(176, 99, 255, 0.05);
-            border-radius: 0 0.5rem 0.5rem 0;
-            padding: 1rem;
-        }
+        .wiki-content blockquote { border-left: 4px solid var(--primary-purple); padding-left: 1rem; margin-left: 0; font-style: italic; color: #6b7280; background: rgba(176, 99, 255, 0.05); border-radius: 0 0.5rem 0.5rem 0; padding: 1rem; }
         .wiki-content img { max-width: 100%; height: auto; border-radius: 0.75rem; margin-top: 1rem; margin-bottom: 1rem; border: 2px solid var(--primary-purple); }
-        
-        .folder-toggle::before { 
-            content: '►'; 
-            display: inline-block; 
-            margin-right: 6px; 
-            transition: transform 0.2s; 
-            font-size: 0.7rem; 
-            color: var(--primary-purple);
-        }
+        .folder-toggle::before { content: '►'; display: inline-block; margin-right: 6px; transition: transform 0.2s; font-size: 0.7rem; color: var(--primary-purple); }
         .folder-toggle.open::before { transform: rotate(90deg); }
-        
-        .glass-effect {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(176, 99, 255, 0.2);
-            border-radius: 0.75rem;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--dark-purple) 0%, #2d1b5c 100%);
-            color: var(--white);
-            border: 1px solid var(--primary-purple);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(32, 25, 65, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(32, 25, 65, 0.4);
-            background: linear-gradient(135deg, #2d1b5c 0%, var(--dark-purple) 100%);
-        }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(176, 99, 255, 0.2); border-radius: 0.75rem; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); }
+        .btn-primary { background: linear-gradient(135deg, var(--dark-purple) 0%, #2d1b5c 100%); color: var(--white); border: 1px solid var(--primary-purple); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(32, 25, 65, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(32, 25, 65, 0.4); background: linear-gradient(135deg, #2d1b5c 0%, var(--dark-purple) 100%); }
+        .loader-overlay { position: fixed; inset: 0; background-color: rgba(32, 25, 65, 0.6); backdrop-filter: blur(5px); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .loader-spinner { width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.3); border-top-color: var(--primary-purple); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+    <div id="loader" class="loader-overlay hidden">
+        <div class="loader-spinner"></div>
+    </div>
 
     <div id="app" class="min-h-screen flex flex-col">
         <header class="header-custom sticky top-0 z-20">
@@ -118,21 +60,14 @@
                     <img src="assets\Ejcomp-logo-branco.png" alt="Logo EJComp" class="h-10 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/ffffff/b063ff?text=EJComp';">
                 </div>
                 <div id="auth-container">
-                    <button id="login-btn" class="btn-primary font-semibold px-4 py-2 rounded-lg">
-                        Login com Google
-                    </button>
+                    <button id="login-btn" class="btn-primary font-semibold px-4 py-2 rounded-lg">Login com Google</button>
                     <div id="user-info" class="hidden items-center space-x-4">
                         <img id="user-avatar" class="w-10 h-10 rounded-full border-2 border-primary-purple" alt="Avatar do usuário">
                         <span id="user-name" class="font-medium text-white hidden sm:block"></span>
                         <button id="manage-users-btn" class="hidden btn-primary p-2 rounded-full" title="Gerir Utilizadores">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0115 11.07M11.5 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                                <path d="M5.525 11.918A2.001 2.001 0 004 13.845V15a1 1 0 001 1h4a1 1 0 001-1v-1.155a2.001 2.001 0 00-1.525-1.927l-1.962-.702a1 1 0 01-.566 1.947l.566.202a.001.001 0 00.03 0l.001-.001a3.002 3.002 0 011.928 2.53H5a3 3 0 01-3-3v-1.155a4.002 4.002 0 012.06-3.568l.566-.202a1 1 0 01.566 1.947l-1.962.702z" />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0115 11.07M11.5 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /><path d="M5.525 11.918A2.001 2.001 0 004 13.845V15a1 1 0 001 1h4a1 1 0 001-1v-1.155a2.001 2.001 0 00-1.525-1.927l-1.962-.702a1 1 0 01-.566 1.947l.566.202a.001.001 0 00.03 0l.001-.001a3.002 3.002 0 011.928 2.53H5a3 3 0 01-3-3v-1.155a4.002 4.002 0 012.06-3.568l.566-.202a1 1 0 01.566 1.947l-1.962.702z" /></svg>
                         </button>
-                        <button id="logout-btn" class="bg-red-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                            Sair
-                        </button>
+                        <button id="logout-btn" class="bg-red-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Sair</button>
                     </div>
                 </div>
             </div>
@@ -145,12 +80,8 @@
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="text-lg font-semibold text-dark-purple">Navegação</h2>
                             <div id="global-actions" class="hidden space-x-2">
-                                <button id="new-folder-btn" title="Nova Pasta" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
-                                </button>
-                                <button id="new-page-btn" title="Nova Página" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd" /></svg>
-                                </button>
+                                <button id="new-folder-btn" title="Nova Pasta" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg></button>
+                                <button id="new-page-btn" title="Nova Página" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd" /></svg></button>
                             </div>
                         </div>
                         <div id="items-list" class="space-y-1">
@@ -165,17 +96,12 @@
                         <p class="text-lg text-gray-600">Selecione um item na lista à esquerda para começar.</p>
                         <p id="login-prompt" class="mt-4 text-lg text-gray-600">Para ver o conteúdo, por favor, <a href="#" id="login-link" class="font-semibold">faça o login</a>.</p>
                     </div>
-                    
                     <div id="page-display" class="hidden">
                         <div class="flex justify-between items-start mb-4">
                             <h2 id="page-title-display" class="text-4xl font-bold break-words"></h2>
                             <div id="page-actions" class="hidden flex-shrink-0 ml-4 space-x-2">
-                                <button id="edit-item-btn" class="btn-primary p-2 rounded-lg" title="Editar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
-                                </button>
-                                <button id="delete-item-btn" class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-700 transition-colors" title="Excluir">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                                </button>
+                                <button id="edit-item-btn" class="btn-primary p-2 rounded-lg" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button>
+                                <button id="delete-item-btn" class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-700 transition-colors" title="Excluir"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></button>
                             </div>
                         </div>
                         <div id="page-content-display" class="wiki-content prose prose-lg max-w-none"></div>
@@ -197,15 +123,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label for="type-input" class="block text-lg font-medium mb-2 text-dark-purple">Tipo</label>
-                            <select id="type-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple">
-                                <option value="page">Página</option>
-                                <option value="folder">Pasta</option>
-                            </select>
+                            <select id="type-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple"><option value="page">Página</option><option value="folder">Pasta</option></select>
                         </div>
                         <div>
                             <label for="parent-input" class="block text-lg font-medium mb-2 text-dark-purple">Pasta Pai</label>
-                            <select id="parent-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple">
-                                </select>
+                            <select id="parent-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple"></select>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -215,8 +137,7 @@
                         </div>
                         <div>
                             <label for="permission-input" class="block text-lg font-medium mb-2 text-dark-purple">Permissão</label>
-                            <select id="permission-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple">
-                                </select>
+                            <select id="permission-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple"></select>
                         </div>
                     </div>
                     <div id="content-wrapper">
@@ -226,9 +147,7 @@
                 </form>
             </div>
             <div class="p-5 border-t border-purple-200 bg-white bg-opacity-50 flex justify-end">
-                <button id="save-item-btn" class="btn-primary font-bold px-6 py-3 rounded-lg">
-                    Salvar Item
-                </button>
+                <button id="save-item-btn" class="btn-primary font-bold px-6 py-3 rounded-lg">Salvar Item</button>
             </div>
         </div>
     </div>
@@ -239,8 +158,7 @@
                 <h3 class="text-2xl font-bold text-dark-purple">Gerir Utilizadores</h3>
                 <button id="close-users-modal-btn" class="text-gray-500 hover:text-dark-purple text-3xl leading-none">&times;</button>
             </div>
-            <div id="users-list-container" class="p-5 flex-grow overflow-y-auto space-y-3">
-                </div>
+            <div id="users-list-container" class="p-5 flex-grow overflow-y-auto space-y-3"></div>
         </div>
     </div>
 
@@ -274,10 +192,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
-        
         const markdownConverter = new showdown.Converter();
-
-        // Elementos da UI
+        
+        const loader = document.getElementById('loader');
         const loginBtn = document.getElementById('login-btn');
         const logoutBtn = document.getElementById('logout-btn');
         const loginLink = document.getElementById('login-link');
@@ -296,8 +213,6 @@
         const editItemBtn = document.getElementById('edit-item-btn');
         const deleteItemBtn = document.getElementById('delete-item-btn');
         const pageActions = document.getElementById('page-actions');
-
-        // Modal de Edição
         const editorModal = document.getElementById('editor-modal');
         const closeModalBtn = document.getElementById('close-modal-btn');
         const modalTitle = document.getElementById('modal-title');
@@ -310,44 +225,34 @@
         const contentWrapper = document.getElementById('content-wrapper');
         const contentInput = document.getElementById('content-input');
         const saveItemBtn = document.getElementById('save-item-btn');
-        
-        // Modal de Exclusão
         const deleteConfirmModal = document.getElementById('delete-confirm-modal');
         const deleteConfirmMessage = document.getElementById('delete-confirm-message');
         const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
         const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-        
-        // Modal de Gestão de Utilizadores
         const manageUsersBtn = document.getElementById('manage-users-btn');
         const manageUsersModal = document.getElementById('manage-users-modal');
         const closeUsersModalBtn = document.getElementById('close-users-modal-btn');
         const usersListContainer = document.getElementById('users-list-container');
 
-        // Estado da Aplicação
         let currentUser = null;
         let currentItemId = null;
         let allItems = [];
         let unsubscribeItemsListener = null;
         let currentUserGroups = [];
 
-        // --- LÓGICA DE PERMISSÕES ---
         const allPermissionGroups = ['todos', 'vendas', 'operacoes', 'marketing', 'projetos', 'inove', 'gp', 'diretoria'];
+
+        const showLoader = () => loader.classList.remove('hidden');
+        const hideLoader = () => loader.classList.add('hidden');
 
         async function fetchUserGroups(user) {
             if (!user) return [];
             const userRolesRef = doc(db, 'user_roles', user.uid);
             const docSnap = await getDoc(userRolesRef);
-
             if (docSnap.exists()) {
                 return docSnap.data().groups || [];
             } else {
-                // Utilizador novo, cria um registo de permissão para ele
-                console.log(`Creating role entry for new user: ${user.email}`);
-                await setDoc(userRolesRef, {
-                    email: user.email,
-                    name: user.displayName,
-                    groups: ['todos'] // Permissão padrão
-                });
+                await setDoc(userRolesRef, { email: user.email, name: user.displayName, groups: ['todos'] });
                 return ['todos'];
             }
         }
@@ -358,32 +263,28 @@
             return userGroups.includes(item.permissionGroup);
         }
 
-        // --- LÓGICA DE AUTENTICAÇÃO E CARREGAMENTO DE DADOS ---
         onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
             if (user) {
+                showLoader();
+                currentUser = user;
                 currentUserGroups = await fetchUserGroups(user);
-
                 userInfo.classList.remove('hidden');
                 userInfo.classList.add('flex');
                 loginBtn.classList.add('hidden');
                 loginPrompt.parentElement.classList.add('hidden');
                 globalActions.classList.remove('hidden');
                 globalActions.classList.add('flex');
-                
                 userAvatar.src = user.photoURL;
                 userName.textContent = user.displayName;
-
-                // Mostra o botão de gerir utilizadores se for da Diretoria
                 if (currentUserGroups.includes('diretoria')) {
                     manageUsersBtn.classList.remove('hidden');
                 } else {
                     manageUsersBtn.classList.add('hidden');
                 }
-
                 if (currentItemId) pageActions.classList.remove('hidden');
                 listenForItems();
             } else {
+                currentUser = null;
                 currentUserGroups = [];
                 userInfo.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
@@ -391,17 +292,22 @@
                 globalActions.classList.add('hidden');
                 pageActions.classList.add('hidden');
                 manageUsersBtn.classList.add('hidden');
-                
                 currentItemId = null;
                 pageDisplay.classList.add('hidden');
                 welcomeMessage.classList.remove('hidden');
-
                 if (unsubscribeItemsListener) unsubscribeItemsListener();
                 itemsListEl.innerHTML = '<p id="items-list-status" class="italic text-gray-500">Faça login para ver o conteúdo.</p>';
             }
+            hideLoader();
         });
 
-        const signInWithGoogle = () => signInWithPopup(auth, provider).catch(err => console.error("Login error:", err));
+        const signInWithGoogle = () => {
+            showLoader();
+            signInWithPopup(auth, provider).catch(err => {
+                console.error("Login error:", err);
+                hideLoader();
+            });
+        };
         const signOutUser = () => signOut(auth).catch(err => console.error("Logout error:", err));
         
         loginBtn.addEventListener('click', signInWithGoogle);
@@ -411,13 +317,14 @@
         function listenForItems() {
             const itemsCollection = collection(db, 'items');
             const q = query(itemsCollection, orderBy("title"));
-            
             unsubscribeItemsListener = onSnapshot(q, (snapshot) => {
                 allItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderTree();
+                hideLoader();
             }, (error) => {
                 console.error("Firestore listener error:", error);
                 itemsListEl.innerHTML = '<p class="text-red-500 italic">Erro ao carregar. Verifique as permissões do Firestore.</p>';
+                hideLoader();
             });
         }
 
@@ -425,7 +332,6 @@
             itemsListEl.innerHTML = '';
             const visibleItems = allItems.filter(item => canViewItem(item, currentUserGroups));
             const tree = buildTree(visibleItems);
-
             if (tree.length === 0) {
                  itemsListEl.innerHTML = '<p class="italic text-gray-500">Nenhum item visível para você.</p>';
                  return;
@@ -442,7 +348,6 @@
         function renderNode(node, parentEl, depth) {
             const li = document.createElement('div');
             li.style.marginLeft = `${depth * 16}px`;
-
             if (node.type === 'folder') {
                 li.innerHTML = `
                     <div class="flex items-center cursor-pointer group p-1 rounded-md hover:bg-purple-100">
@@ -454,13 +359,11 @@
                 const childrenContainer = document.createElement('div');
                 childrenContainer.className = 'hidden';
                 li.appendChild(childrenContainer);
-
                 li.querySelector('.group').addEventListener('click', () => {
                     childrenContainer.classList.toggle('hidden');
                     li.querySelector('.folder-toggle').classList.toggle('open');
                 });
-
-                node.children.forEach(child => renderNode(child, childrenContainer, 0)); // Corrigido para profundidade 0 dentro da pasta
+                node.children.forEach(child => renderNode(child, childrenContainer, depth + 1));
             } else {
                 li.innerHTML = `
                     <a href="#" data-id="${node.id}" class="flex items-center p-1 rounded-md hover:bg-purple-100 group">
@@ -477,19 +380,17 @@
         }
 
         async function loadPageContent(id) {
+            showLoader();
             try {
                 const docRef = doc(db, 'items', id);
                 const docSnap = await getDoc(docRef);
-
                 if (docSnap.exists()) {
                     const item = docSnap.data();
                     if (!canViewItem(item, currentUserGroups)) {
                         alert("Você não tem permissão para ver este item.");
                         return;
                     }
-
                     if (item.type === 'folder') return;
-
                     currentItemId = id;
                     pageTitleDisplay.textContent = item.title;
                     pageContentDisplay.innerHTML = markdownConverter.makeHtml(item.content || '');
@@ -499,6 +400,8 @@
                 }
             } catch (error) {
                 console.error("Error loading page:", error);
+            } finally {
+                hideLoader();
             }
         }
 
@@ -508,11 +411,9 @@
             titleInput.value = title;
             contentInput.value = content;
             typeInput.value = type;
-            
-            populatePermissionDropdown(permissionGroup);
             updateParentDropdown(parentId);
+            handleParentChange();
             handleTypeChange();
-
             modalTitle.textContent = id ? 'Editar Item' : 'Novo Item';
             editorModal.classList.remove('hidden');
             titleInput.focus();
@@ -521,14 +422,11 @@
         function populatePermissionDropdown(selectedGroup) {
             permissionInput.innerHTML = '';
             const isDirector = currentUserGroups.includes('diretoria');
-            
             const assignableGroups = allPermissionGroups.filter(group => {
-                if (group === 'todos' || isDirector) {
-                    return true;
-                }
+                if (isDirector) return true;
+                if (group === 'todos') return true;
                 return currentUserGroups.includes(group);
             });
-
             assignableGroups.forEach(group => {
                 const option = document.createElement('option');
                 option.value = group;
@@ -553,6 +451,24 @@
                 parentInput.appendChild(option);
             });
         }
+
+        function handleParentChange() {
+            const selectedParentId = parentInput.value;
+            const isDirector = currentUserGroups.includes('diretoria');
+            if (selectedParentId) {
+                const parentFolder = allItems.find(item => item.id === selectedParentId);
+                if (parentFolder) {
+                    const parentPermissionGroup = parentFolder.permissionGroup;
+                    populatePermissionDropdown(parentPermissionGroup);
+                    permissionInput.value = parentPermissionGroup;
+                    permissionInput.disabled = !isDirector;
+                }
+            } else {
+                permissionInput.disabled = false;
+                populatePermissionDropdown('todos');
+            }
+        }
+        parentInput.addEventListener('change', handleParentChange);
 
         function handleTypeChange() {
             contentWrapper.style.display = typeInput.value === 'page' ? 'block' : 'none';
@@ -582,7 +498,7 @@
                 alert("Páginas devem ter conteúdo.");
                 return;
             }
-
+            showLoader();
             const itemData = {
                 title: titleInput.value.trim(),
                 type: typeInput.value,
@@ -595,7 +511,6 @@
             if (itemData.type === 'page') {
                 itemData.content = contentInput.value;
             }
-
             const id = itemIdInput.value;
             try {
                 let docIdToLoad = id;
@@ -608,10 +523,14 @@
                     docIdToLoad = docRef.id;
                 }
                 editorModal.classList.add('hidden');
-                if (itemData.type === 'page') loadPageContent(docIdToLoad);
+                if (itemData.type === 'page') {
+                    await loadPageContent(docIdToLoad);
+                }
             } catch (error) {
                 console.error("Error saving item:", error);
                 alert("Erro ao salvar. Verifique o console para mais detalhes.");
+            } finally {
+                hideLoader();
             }
         });
 
@@ -619,7 +538,7 @@
         deleteItemBtn.addEventListener('click', () => {
             if (!currentItemId) return;
             itemToDelete = allItems.find(i => i.id === currentItemId);
-            if(itemToDelete) {
+            if (itemToDelete) {
                  if (currentUserGroups.includes('diretoria') || itemToDelete.authorUid === currentUser.uid) {
                     deleteConfirmModal.classList.remove('hidden');
                  } else {
@@ -632,6 +551,7 @@
 
         confirmDeleteBtn.addEventListener('click', async () => {
             if (!itemToDelete || !currentUser) return;
+            showLoader();
             try {
                 const batch = writeBatch(db);
                 const childrenIds = getChildrenRecursive(itemToDelete.id, allItems);
@@ -639,7 +559,6 @@
                     batch.delete(doc(db, "items", id));
                 });
                 await batch.commit();
-
                 deleteConfirmModal.classList.add('hidden');
                 pageDisplay.classList.add('hidden');
                 welcomeMessage.classList.remove('hidden');
@@ -648,6 +567,8 @@
             } catch (error) {
                 console.error("Error deleting item:", error);
                 alert("Erro ao excluir. Verifique o console para mais detalhes.");
+            } finally {
+                hideLoader();
             }
         });
 
@@ -662,35 +583,28 @@
             return allChildrenIds;
         }
 
-        // --- LÓGICA DE GESTÃO DE UTILIZADORES ---
-         async function loadAllUsers() {
+        async function loadAllUsers() {
+            showLoader();
             usersListContainer.innerHTML = '<p class="italic text-gray-500">A carregar utilizadores...</p>';
             try {
                 const usersRef = collection(db, 'user_roles');
                 const querySnapshot = await getDocs(usersRef);
-                
-                usersListContainer.innerHTML = ''; // Limpa o container
-
+                usersListContainer.innerHTML = '';
                 querySnapshot.forEach(docSnap => {
                     const userData = docSnap.data();
                     const userId = docSnap.id;
                     const userDiv = document.createElement('div');
                     userDiv.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-purple-100 transition-colors';
-                    
                     userDiv.innerHTML = `
                         <div>
                             <p class="font-bold text-dark-purple">${userData.name || 'Nome não disponível'}</p>
                             <p class="text-sm text-gray-600">${userData.email}</p>
                         </div>
                     `;
-
                     const roleSelector = document.createElement('select');
                     roleSelector.className = 'p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-purple';
-                    
-                    // LÓGICA DE EXIBIÇÃO CORRIGIDA
                     const userCurrentGroups = userData.groups || [];
                     const primaryRole = userCurrentGroups.find(g => g !== 'todos') || 'todos';
-
                     allPermissionGroups.forEach(group => {
                         const option = document.createElement('option');
                         option.value = group;
@@ -700,21 +614,16 @@
                         }
                         roleSelector.appendChild(option);
                     });
-
                     roleSelector.addEventListener('change', async (e) => {
+                        showLoader();
                         const selectedRole = e.target.value;
-                        console.log(`Alterando permissão de ${userId} para ${selectedRole}`);
-                        
-                        // LÓGICA DE SALVAMENTO CORRIGIDA
                         let newGroups = [];
                         if (selectedRole === 'todos') {
                             newGroups = ['todos'];
                         } else {
                             newGroups = [selectedRole, 'todos'];
                         }
-                        // Garante que não há duplicatas
                         newGroups = [...new Set(newGroups)];
-
                         try {
                             const userRoleRef = doc(db, 'user_roles', userId);
                             await setDoc(userRoleRef, { groups: newGroups }, { merge: true });
@@ -722,16 +631,18 @@
                         } catch (error) {
                             console.error("Erro ao alterar permissão:", error);
                             alert("Ocorreu um erro ao alterar a permissão.");
+                        } finally {
+                            hideLoader();
                         }
                     });
-
                     userDiv.appendChild(roleSelector);
                     usersListContainer.appendChild(userDiv);
                 });
-
             } catch (error) {
                 console.error("Erro ao carregar utilizadores:", error);
                 usersListContainer.innerHTML = '<p class="text-red-500 italic">Erro ao carregar utilizadores. Verifique o console.</p>';
+            } finally {
+                hideLoader();
             }
         }
 
@@ -743,7 +654,6 @@
         closeUsersModalBtn.addEventListener('click', () => {
             manageUsersModal.classList.add('hidden');
         });
-
     </script>
 </body>
 </html>
