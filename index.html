@@ -349,20 +349,30 @@
             const li = document.createElement('div');
             li.style.marginLeft = `${depth * 16}px`;
             if (node.type === 'folder') {
-                li.innerHTML = `
-                    <div class="flex items-center cursor-pointer group p-1 rounded-md hover:bg-purple-100">
-                        <span class="folder-toggle w-4 transition-transform duration-200"></span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-purple" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
-                        <span class="font-medium text-dark-purple">${node.title}</span>
-                    </div>
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'flex items-center group p-1 rounded-md hover:bg-purple-100';
+                folderDiv.innerHTML = `
+                    <span class="folder-toggle w-4 transition-transform duration-200 cursor-pointer"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-purple" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                    <span class="font-medium text-dark-purple cursor-pointer flex-grow">${node.title}</span>
                 `;
+                li.appendChild(folderDiv);
+                
                 const childrenContainer = document.createElement('div');
                 childrenContainer.className = 'hidden';
                 li.appendChild(childrenContainer);
-                li.querySelector('.group').addEventListener('click', () => {
+
+                folderDiv.querySelector('.folder-toggle').addEventListener('click', (e) => {
+                    e.stopPropagation();
                     childrenContainer.classList.toggle('hidden');
-                    li.querySelector('.folder-toggle').classList.toggle('open');
+                    folderDiv.querySelector('.folder-toggle').classList.toggle('open');
                 });
+                
+                folderDiv.querySelector('.font-medium').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    loadPageContent(node.id);
+                });
+
                 node.children.forEach(child => renderNode(child, childrenContainer, depth + 1));
             } else {
                 li.innerHTML = `
@@ -390,10 +400,15 @@
                         alert("Você não tem permissão para ver este item.");
                         return;
                     }
-                    if (item.type === 'folder') return;
                     currentItemId = id;
                     pageTitleDisplay.textContent = item.title;
-                    pageContentDisplay.innerHTML = markdownConverter.makeHtml(item.content || '');
+
+                    if (item.type === 'folder') {
+                        pageContentDisplay.innerHTML = `<div class="text-center p-8"><h3 class="text-2xl font-semibold text-dark-purple">Pasta: ${item.title}</h3><p class="text-gray-600 mt-2">Selecione um arquivo dentro desta pasta ou use os botões de ação acima para editar ou excluir esta pasta.</p></div>`;
+                    } else {
+                        pageContentDisplay.innerHTML = markdownConverter.makeHtml(item.content || '');
+                    }
+                    
                     welcomeMessage.classList.add('hidden');
                     pageDisplay.classList.remove('hidden');
                     if (currentUser) pageActions.classList.remove('hidden');
@@ -529,7 +544,6 @@
             } catch (error) {
                 console.error("Error saving item:", error);
                 alert("Erro ao salvar. Verifique o console para mais detalhes.");
-            } finally {
                 hideLoader();
             }
         });
